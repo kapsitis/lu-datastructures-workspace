@@ -106,15 +106,35 @@ There must be a space between every two adjacent numbers.
 Used to test cpp-related code -- both for reuse in Android NDK 
 projects and also to protect with zShield separately.
 
+
+
+## Windows instructions
+
+Open "Developer Command Prompt for VS 2022". 
+
+```
+cd CppDifferentNumbers
+mkdir mybuild
+cd mybuild
+cmake .. 
+cmake --build . --config Release
+ctest
+```
+
+
+
+## Mac OS X instructions
+
+
 Build instructions:
 
 ```
-cd CppKeyDerivation
+cd CppDifferentNumbers
 mkdir build
 cd build
-cmake -G "Xcode" .. -DCMAKE_OSX_DEPLOYMENT_TARGET=11 -DSKB_TARGET_LIB_DIR="$SKB_ROOT/lib/apple/macosx"
+cmake -G "Xcode" .. -DCMAKE_OSX_DEPLOYMENT_TARGET=11
 cmake --build . --config Release
-./src/Release/cppkeyderivation_project_run
+./src/Release/cppdifferentnumbers_project_run
 ctest
 ```
 
@@ -122,7 +142,7 @@ If "make" command is supported from the command-line, another set of commands ca
 
 ```
 cd build
-cmake .. -DSKB_TARGET_LIB_DIR="$SKB_ROOT/lib/apple/macosx"
+cmake ..
 make
 ./src/cppkeyderivation_project_run
 ctest
