@@ -103,10 +103,6 @@ There must be a space between every two adjacent numbers.
 
 # CppDifferentNumbers build instructions 
 
-Used to test cpp-related code -- both for reuse in Android NDK 
-projects and also to protect with zShield separately.
-
-
 
 ## Windows instructions
 
