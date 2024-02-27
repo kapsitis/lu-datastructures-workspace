@@ -89,8 +89,10 @@ There must be a space between every two adjacent numbers.
 
 ## Outline of the solution 
 
-* Sliding window technique (the fragment we are searching fits between two pointers) - expand or shrink the window to satisfy the criteria (try to maximize its length).
-* The analysis of this algorithm counts the changes of the window size - it equals $O(n)$, where $n$ is the length of the input list. 
+* Sliding window technique (the fragment we are searching fits between two pointers) - 
+  expand or shrink the window to satisfy the criteria (try to maximize its length).
+* The analysis of this algorithm counts the changes of the window size - 
+  it equals $O(n)$, where $n$ is the length of the input list. 
 
 
 

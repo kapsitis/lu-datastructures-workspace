@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <set>
 #include <chrono>
 #include <sstream>
 #include <algorithm> //For std::min_element and std::max_element
@@ -9,76 +10,111 @@
 using namespace std;
 using namespace std::chrono;
 
+using namespace std;
 
-string toHex(const unsigned char* exported, const unsigned int exported_size) {
-    std::stringstream hexStream;
-    for (unsigned int i = 0; i < exported_size; ++i) {
-        hexStream << std::hex << std::setfill('0') << std::setw(2) << (unsigned int)exported[i];
+void printSet(set<int> ss) {
+    cout << "{";
+    for (int s: ss) {
+        cout << s << ",";
     }
-    return hexStream.str();
+    cout << "}";
+}
+
+void printVector(vector<int> ss) {
+    cout << "[";
+    for (int s: ss) {
+        cout << s << ",";
+    }
+    cout << "]";
+}
+
+int getAllFragments(const vector<int>& input, vector<int>& output) {
+    int len = input.size(); 
+    int left = 0; 
+    int right = 0;
+    int result = 0; 
+    set<int> current; 
+    while (left <= len - 1) {
+        if (right <= len - 1 && current.find(input[right]) == current.end()) {
+            current.insert(input[right]);
+            if ((right + 1) - left > result) {
+                output.clear();
+                output.push_back(left+1);
+                result = (right+1) - left;
+            }
+            else if ((right + 1) - left == result) {
+                if (output.size() > 0 && output.back() <= left) {
+                    output.push_back(left+1);
+                }
+            }
+            right += 1; 
+            
+            // cout << "(" << left << "," << right << "," << result << ")"; 
+            // printSet(current);
+            // cout << endl;
+        }
+        else {
+            current.erase(input[left]);
+            left += 1;
+            // cout << "(" << left << "," << right << "," << result << ")"; 
+            // printSet(current);
+            // cout << endl;
+        }
+    }
+    return result;
 }
 
 
-int main() {
-  auto start = high_resolution_clock::now();
 
-    // Open the input file
+int main() {
+    auto clockStart = high_resolution_clock::now();
+
     ifstream inputFile("input.txt");
-    
-    // Check if the file is open
     if (!inputFile.is_open()) {
         cerr << "Error opening file" << endl;
-        return 1; // Return error code 1
+        return 1;
     }
-    
     int numIntegers;
-    inputFile >> numIntegers; // Read the first number from the file, which indicates the number of integers
-    
-    vector<int> numbers; // Declare a vector to store the integers
+    inputFile >> numIntegers;
+    vector<int> numbers;
     for (int i = 0; i < numIntegers; ++i) {
         int number;
-        inputFile >> number; // Read each integer
-        numbers.push_back(number); // Add the integer to the vector
+        inputFile >> number;
+        numbers.push_back(number);
     }
-    
-    inputFile.close(); // Close the input file
+    inputFile.close();
 
-    // Print "Hello world\n"
-    cout << "Hello world\n";
+    vector<int> output; 
+    int maxLength = getAllFragments(numbers, output);
 
-
-
-
-// Processing to find min and max
-    if (!numbers.empty()) { // Ensure the vector is not empty
-        int minValue = *min_element(numbers.begin(), numbers.end());
-        int maxValue = *max_element(numbers.begin(), numbers.end());
-
-        // Write the results to an output file
+    if (!numbers.empty()) { 
         ofstream outputFile("output.txt");
         if (outputFile.is_open()) {
-            outputFile << minValue << '\n';
-            outputFile << maxValue;
+            outputFile << maxLength << '\n';
+            int fragmentCount = output.size(); 
+            outputFile << fragmentCount << '\n';
+            int fragment = 0; 
+            for (int o: output) {
+                outputFile << o;
+                if (fragment++ != fragmentCount - 1) {
+                    outputFile << " ";
+                }
+            }
+            outputFile << '\n'; 
             outputFile.close();
-        } else {
-            cerr << "Error opening output file" << endl;
-            return 1; // Return error code 1
         }
-    } else {
+        else {
+            cerr << "Error opening output file" << endl;
+            return 1;
+        }
+    }
+    else {
         cerr << "No numbers to process" << endl;
-        return 1; // Return error code 1
+        return 1;
     }
 
-
-    
-
-    auto stop = high_resolution_clock::now();
-
-    // Calculate the duration in milliseconds
-    auto duration = duration_cast<microseconds>(stop - start);
-
-    // Output the duration in milliseconds
+    auto clockStop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(clockStop - clockStart);
     cout << "Execution time: " << duration.count() << " microseconds\n";
-
-  return 0;
+    return 0;
 }
